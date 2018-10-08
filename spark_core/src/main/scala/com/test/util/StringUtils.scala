@@ -9,10 +9,11 @@ object StringUtils {
     * @param json
     * @return
     */
-  def jsonStrToMap(args:Array[String]):Map[String,Any] ={
+  def jsonStrToMap(args:Array[String]):Any ={
     val jsonObj = JSON.parseFull(args.mkString(""))
     jsonObj match {
-      case Some(map: Map[String, Any]) => map
+      case Some(map: Map[String, String]) => map
+      case _ => None
     }
   }
 }

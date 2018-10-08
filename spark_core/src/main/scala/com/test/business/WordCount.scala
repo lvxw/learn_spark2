@@ -1,6 +1,7 @@
 package com.test.business
 
 import com.test.common.BaseProgram
+import org.apache.spark.internal.io.FileCommitProtocol.TaskCommitMessage
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -17,11 +18,11 @@ object WordCount extends BaseProgram {
   private val dataFrame: DataFrame = readCsvToDataFrame(indexAndNameMap=Map(0 -> "name",2->"score"))
 
   dataFrame.createTempView("person")
-  private val df2: DataFrame = sparkSession.sql("select * from person")
-  df2.show()
+  private val df: DataFrame = sparkSession.sql("select * from person")
+  df.write.csv(outputDir)
 
   override def setSerializedClass():Unit = {
-    val serializedClassArr:Array[Class[_]] = Array(classOf[Array[String]])
+    val serializedClassArr:Array[Class[_]] = Array(classOf[Array[String]],classOf[TaskCommitMessage])
     sparkConf.registerKryoClasses(serializedClassArr)
   }
 }

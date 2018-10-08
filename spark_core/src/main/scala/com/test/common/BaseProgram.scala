@@ -1,13 +1,14 @@
 package com.test.common
 
-import com.test.util.StringUtils
+import com.test.util.{FileUtils, StringUtils}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import java.io.File
 
 import scala.collection.mutable.ArrayBuffer
 
 class BaseProgram extends App {
-  lazy val paramMap:Map[String,Any] = StringUtils.jsonStrToMap(args)
+  lazy val paramMap:Map[String,String] = StringUtils.jsonStrToMap(args).asInstanceOf[Map[String,String]]
   var runPattern:String = _
   var inputDir:String = _
   var outputDir:String = _
@@ -17,24 +18,26 @@ class BaseProgram extends App {
   val runPatternList = List("local","test","public")
   var sparkConf:SparkConf = _
 
+  def init():Unit ={
+    System.setProperty("scala.time","")
+    delayedInit(() => sparkSession.close())
+  }
+
   def initParams():Unit ={
-    runPattern = paramMap.getOrElse("run_pattern","").toString
-    inputDir = paramMap.getOrElse("input_dir","").toString
-    outputDir = paramMap.getOrElse("output_dir","").toString
-    dataDate = paramMap.getOrElse("data_date","").toString
+    runPattern = paramMap.getOrElse("run_pattern","")
+    inputDir = paramMap.getOrElse("input_dir","")
+    outputDir = paramMap.getOrElse("output_dir","")
+    dataDate = paramMap.getOrElse("data_date","")
   }
 
   def initSparkConf():Unit = {
     sparkConf = new SparkConf()
       .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .set("spark.kryo.registrationRequired", "true")
+//      .set("spark.kryo.registrationRequired", "true")
       .setAppName(appName)
     if(runPattern == runPatternList(0)){
+      FileUtils.deleteDir(new File(outputDir))
       sparkConf.setMaster("local[*]")
-    }else if(runPattern == runPatternList(1)){
-      System.setProperty("HADOOP_USER_NAME", "hadoop")
-      sparkConf.setMaster("yarn-client")
-      sparkConf.set("SPARK_HOME", "/home/hadoop/soft/spark2")
     }
     setSerializedClass()
   }
@@ -65,6 +68,7 @@ class BaseProgram extends App {
     sparkConf.registerKryoClasses(Array(classOf[String],classOf[Int]))
   }
 
+  init()
   initParams()
   initSparkConf()
   val sparkSession = SparkSession.builder().config(sparkConf).getOrCreate()
