@@ -15,6 +15,7 @@ SPARK2_INSTALL=$BASE_PATH/spark2
 # Sqoop
 SQOOP_INSTALL=$BASE_PATH/sqoop
 
-
+# 运行模式
+RUN_PATTERN=public
 
 

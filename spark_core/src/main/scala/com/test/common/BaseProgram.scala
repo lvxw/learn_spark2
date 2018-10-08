@@ -1,9 +1,8 @@
 package com.test.common
 
-import com.test.util.{FileUtils, StringUtils}
+import com.test.util.{HdfsFileUtils, StringUtils}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import java.io.File
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -20,7 +19,7 @@ class BaseProgram extends App {
 
   def init():Unit ={
     System.setProperty("scala.time","")
-    delayedInit(() => sparkSession.close())
+    delayedInit(() => sparkSession.stop())
   }
 
   def initParams():Unit ={
@@ -36,7 +35,6 @@ class BaseProgram extends App {
 //      .set("spark.kryo.registrationRequired", "true")
       .setAppName(appName)
     if(runPattern == runPatternList(0)){
-      FileUtils.deleteDir(new File(outputDir))
       sparkConf.setMaster("local[*]")
     }
     setSerializedClass()
@@ -72,4 +70,5 @@ class BaseProgram extends App {
   initParams()
   initSparkConf()
   val sparkSession = SparkSession.builder().config(sparkConf).getOrCreate()
+  HdfsFileUtils.deleteDir(sparkSession,outputDir)
 }
