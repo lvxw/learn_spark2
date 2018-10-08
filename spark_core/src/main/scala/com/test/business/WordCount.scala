@@ -16,7 +16,6 @@ object WordCount extends BaseProgram {
 
   private val dataFrame: DataFrame = readCsvToDataFrame(indexAndNameMap=Map(0 -> "name",2->"score"))
 
-//  private val dataFrame: DataFrame = loadDataFromHive("lvxw.manage_partition",Array("*"))
   dataFrame.createTempView("person")
   private val df2: DataFrame = sparkSession.sql("select * from person")
   df2.show()

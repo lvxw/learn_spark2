@@ -35,16 +35,6 @@ class BaseProgram extends App {
       System.setProperty("HADOOP_USER_NAME", "hadoop")
       sparkConf.setMaster("yarn-client")
       sparkConf.set("SPARK_HOME", "/home/hadoop/soft/spark2")
-//      sparkConf.set("mapreduce.framework.name", "yarn")
-//      sparkConf.set("yarn.resourcemanager.hostname", "artemis-02")
-//      sparkConf.set("yarn.nodemanager.aux-services", "mapreduce_shuffle")
-//      sparkConf.set("yarn.resourcemanager.address", "artemis-02:8032")
-//      sparkConf.set("yarn.resourcemanager.scheduler.address", "artemis-02:8030")
-//      sparkConf.set("yarn.resourcemanager.resource-tracker.address", "artemis-02:8035")
-//      sparkConf.set("yarn.resourcemanager.admin.address", "artemis-02:8033")
-//      sparkConf.set("yarn.resourcemanager.webapp.address", "artemis-02:8088")
-//      sparkConf.setJars(List("spark_core/target/original-SparkCore.jar"))
-//      sparkConf.set("spark.yarn.jars", "hdfs://artemis-02:9000/spark/jars/*.jar")
     }
     setSerializedClass()
   }
@@ -68,13 +58,6 @@ class BaseProgram extends App {
       .toDF(fieldNameArrBuf:_*)
   }
 
-  def loadDataFromHive(databaseAndTable:String,fieldName:Array[String]): DataFrame ={
-    fieldName.mkString(",")
-    val hql = s"select ${fieldName.mkString(",")} from ${databaseAndTable}"
-    sparkSession.sql(hql)
-  }
-
-
   /**
     * 子类必须重写该方法，此处只是示例
     */
@@ -84,7 +67,5 @@ class BaseProgram extends App {
 
   initParams()
   initSparkConf()
-//  val sparkSession = SparkSession.builder().enableHiveSupport().config(sparkConf).getOrCreate()
-
   val sparkSession = SparkSession.builder().config(sparkConf).getOrCreate()
 }
