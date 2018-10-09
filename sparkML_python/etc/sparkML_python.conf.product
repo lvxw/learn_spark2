@@ -1,0 +1,21 @@
+#Soft base_path
+BASE_PATH=/usr/local
+
+# Hadoop
+HADOOP_INSTALL=$BASE_PATH/hadoop
+LZO_JAR=$HADOOP_INSTALL/share/hadoop/common/hadoop-lzo-0.4.20-SNAPSHOT.jar
+
+# Hive
+HIVE_INSTALL=$BASE_PATH/hive
+
+# Spark
+SPARK_INSTALL=$BASE_PATH/spark
+SPARK2_INSTALL=$BASE_PATH/spark2
+
+# Sqoop
+SQOOP_INSTALL=$BASE_PATH/sqoop
+
+# 运行模式
+RUN_PATTERN='run_pattern=test'
+
+
