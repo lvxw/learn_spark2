@@ -13,6 +13,7 @@ function set_env(){
     cd `cd $(dirname $0)/../.. && pwd`
     source etc/sparkML_python.conf
     source etc/template/common.conf
+
 }
 
 #设置日、周、月的数据输入、输出路径
@@ -27,12 +28,16 @@ function init(){
     output_dir='output_dir=/tmp/lvxw/bbbbbbbbbbbbbb'
 
     $HADOOP_INSTALL/bin/hadoop fs -rm -r -f /tmp/lvxw/bbbbbbbbbbbbbb
+
+    cd ${root_path}/src
+    zip -r ${root_path}/file.zip com
+    cd -
 }
 
 function execute_mr(){
 
     $SPARK2_INSTALL/bin/spark-submit \
-    --py-files com.zip \
+    --py-files file.zip \
     --master yarn \
     --deploy-mode cluster \
     ${root_path}/src/com/test/business/template/wordCount.py ${RUN_PATTERN} ${app_name} ${input_dir} ${output_dir}
