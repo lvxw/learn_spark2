@@ -5,7 +5,7 @@ from com.test.common.BaseProgram import BaseProgram
 
 
 '''
-    浼犻€掑弬鏁帮細
+    IDE 本地测试时，参数为：
         run_pattern=local
         app_name=wordCount
         input_dir=tmp/logs/test/1
