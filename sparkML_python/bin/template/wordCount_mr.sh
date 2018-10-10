@@ -1,7 +1,7 @@
 #!/bin/bash
 ###############################################################################
 #Script:        wordCount_mr.sh
-#Author:        吕学文<lvxw@fun.tv>
+#Author:        吕学文<2622478542@qq.com>
 #Date:          2018-10-08
 #Description:
 #Usage:         wordCount_mr.sh
