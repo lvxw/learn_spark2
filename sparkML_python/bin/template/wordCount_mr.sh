@@ -20,7 +20,7 @@ function set_env(){
 function init(){
     root_path=`pwd`
 
-    export PYTHONPATH=${root_path}/src/:${SPARK2_INSTALL}/python/
+    export PYTHONPATH=${root_path}/:${SPARK2_INSTALL}/python/
     export SPARK_HOME=${SPARK2_INSTALL}
 
     app_name='app_name=wordCount'
@@ -28,19 +28,15 @@ function init(){
     output_dir='output_dir=/tmp/lvxw/bbbbbbbbbbbbbb'
 
     $HADOOP_INSTALL/bin/hadoop fs -rm -r -f /tmp/lvxw/bbbbbbbbbbbbbb
-
-    cd ${root_path}/src
-    zip -r ${root_path}/file.zip com
-    cd -
 }
 
 function execute_mr(){
 
     $SPARK2_INSTALL/bin/spark-submit \
-    --py-files file.zip \
+    --py-files ${root_path}/files/sharedFile.zip \
     --master yarn \
     --deploy-mode cluster \
-    ${root_path}/src/com/test/business/template/wordCount.py ${RUN_PATTERN} ${app_name} ${input_dir} ${output_dir}
+    ${root_path}/com/test/business/template/wordCount.py ${RUN_PATTERN} ${app_name} ${input_dir} ${output_dir}
 }
 
 set_env
