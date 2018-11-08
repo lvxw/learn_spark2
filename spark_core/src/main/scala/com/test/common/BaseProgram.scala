@@ -1,13 +1,16 @@
 package com.test.common
 
-import com.test.util.{HdfsFileUtils, StringUtils}
-import org.apache.spark.SparkConf
+import com.hadoop.mapreduce.LzoTextInputFormat
+import com.test.util.{FileUtils, ParamUtils}
+import org.apache.hadoop.io.{LongWritable, Text}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
 
 class BaseProgram extends App {
-  lazy val paramMap:Map[String,String] = StringUtils.jsonStrToMap(args).asInstanceOf[Map[String,String]]
+  lazy val paramMap:Map[String,String] = ParamUtils.jsonStrToMap(args.mkString(" ")).asInstanceOf[Map[String,String]]
   var runPattern:String = _
   var inputDir:String = _
   var outputDir:String = _
@@ -40,6 +43,16 @@ class BaseProgram extends App {
     setSerializedClass()
   }
 
+  def getInitRDD(sc:SparkContext,inputDir:String):RDD[String]={
+    if(runPattern == runPatternList(2)){
+      sc.newAPIHadoopFile(inputDir,  classOf[LzoTextInputFormat], classOf[LongWritable], classOf[Text]).map{value =>
+        value._2.toString
+      }
+    }else{
+      sc.textFile(inputDir)
+    }
+  }
+
   def readCsvToDataFrame(inputDir:String,indexArr:Array[Int],fileNameArr:Array[String]): DataFrame ={
     val colArr = indexArr.map("_c"+_)
     sparkSession.read.csv(inputDir)
@@ -70,5 +83,5 @@ class BaseProgram extends App {
   initParams()
   initSparkConf()
   val sparkSession = SparkSession.builder().config(sparkConf).getOrCreate()
-  HdfsFileUtils.deleteDir(sparkSession,outputDir)
+  FileUtils.deleteHdfsDir(sparkSession,outputDir)
 }
